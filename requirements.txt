@@ -2,3 +2,4 @@ openai
 reportlab
 Pillow
 flask
+requests
