@@ -125,33 +125,6 @@ def create_new_years_prompt(attributes):
     
     return base_prompt
 
-# Main execution
-if USE_TEST_IMAGE:
-    img = Image.open("temp.png")
-else:
-    # Create prompt
-    birthday_attributes = {
-        'age': 51,
-        'gender': 'woman',
-        'interests': ['reading', 'cooking', 'dogs', 'travel'],
-        'style': 'watercolor',
-        'color_scheme': 'pastel',
-        'name': 'Jashinder'
-    }
-    birthday_prompt = create_birthday_prompt(birthday_attributes)
-    new_years_attributes = {
-        'style': 'whimsical',
-        'color_scheme': 'Disney'
-    }
-    new_years_prompt = create_new_years_prompt(new_years_attributes)
-    # Generate image
-    image_url = generate_image(new_years_prompt)
-    img = process_image(image_url)
-output_filename = mkpath("cards", f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.pdf")
-create_pdf(img, output_filename, message="Happy New Years!")
-
-print("Birthday card generated and saved as PDF successfully!")
-
 def main(attributes):
     prompt = create_birthday_prompt(attributes)
     image_url = generate_image(prompt)
@@ -160,3 +133,31 @@ def main(attributes):
     create_pdf(img, output_filename, message="Happy Birthday!")
     print("Main called and executed")
     return output_filename
+
+if __name__ == "__main__":
+    # Main execution
+    if USE_TEST_IMAGE:
+        img = Image.open("temp.png")
+    else:
+        # Create prompt
+        birthday_attributes = {
+            'age': 51,
+            'gender': 'woman',
+            'interests': ['reading', 'cooking', 'dogs', 'travel'],
+            'style': 'watercolor',
+            'color_scheme': 'pastel',
+            'name': 'Jashinder'
+        }
+        birthday_prompt = create_birthday_prompt(birthday_attributes)
+        new_years_attributes = {
+            'style': 'whimsical',
+            'color_scheme': 'Disney'
+        }
+        new_years_prompt = create_new_years_prompt(new_years_attributes)
+        # Generate image
+        image_url = generate_image(new_years_prompt)
+        img = process_image(image_url)
+    output_filename = mkpath("cards", f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.pdf")
+    create_pdf(img, output_filename, message="Happy New Years!")
+
+    print("Birthday card generated and saved as PDF successfully!")
