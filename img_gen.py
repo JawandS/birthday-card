@@ -46,7 +46,7 @@ def process_image(image_url):
     return img
 
 # Function to create PDF with the image
-def create_pdf(img, output_filename, target_name):
+def create_pdf(img, output_filename, message):
     page_width, page_height = landscape(letter)
     half_page_width = page_width / 2
 
@@ -75,7 +75,7 @@ def create_pdf(img, output_filename, target_name):
     
     # Add "Happy Birthday!" text on the right half
     c.setFont("Helvetica-Bold", 24)
-    c.drawCentredString(page_width * 3/4, page_height / 2, f"Happy Birthday {target_name}!")
+    c.drawCentredString(page_width * 3/4, page_height / 2, f"{message}!")
     
     c.showPage()
     c.save()
@@ -93,7 +93,7 @@ def create_birthday_prompt(attributes):
     if 'gender' in attributes:
         base_prompt += f" {attributes['gender']}"
     
-    base_prompt += ", designed in a vertical layout for a card"
+    # base_prompt += ", designed in a vertical layout for a card"
     
     if 'interests' in attributes and attributes['interests']:
         interests = attributes['interests']
@@ -107,6 +107,21 @@ def create_birthday_prompt(attributes):
         base_prompt += f", using a {attributes['color_scheme']} color scheme"
     
     base_prompt += ". Include birthday cake, balloons, and appropriate decorations."
+    base_prompt += " Do not include any text or numbers in the image."
+    
+    return base_prompt
+
+def create_new_years_prompt(attributes):
+    base_prompt = "A festive New Year's scene"
+    
+    if 'style' in attributes:
+        base_prompt += f" in a {attributes['style']} style"
+    
+    if 'color_scheme' in attributes:
+        base_prompt += f" using a {attributes['color_scheme']} color scheme"
+    
+    base_prompt += ". Include fireworks, champagne, and other New Year's decorations."
+    base_prompt += " Do not include any text or numbers in the image."
     
     return base_prompt
 
@@ -115,18 +130,33 @@ if USE_TEST_IMAGE:
     img = Image.open("temp.png")
 else:
     # Create prompt
-    attributes = {
-        'age': 30,
+    birthday_attributes = {
+        'age': 51,
         'gender': 'woman',
-        'interests': ['travel', 'photography', 'cats'],
+        'interests': ['reading', 'cooking', 'dogs', 'travel'],
         'style': 'watercolor',
         'color_scheme': 'pastel',
-        'name': 'Alice'
+        'name': 'Jashinder'
     }
-    prompt = create_birthday_prompt(attributes)
+    birthday_prompt = create_birthday_prompt(birthday_attributes)
+    new_years_attributes = {
+        'style': 'whimsical',
+        'color_scheme': 'Disney'
+    }
+    new_years_prompt = create_new_years_prompt(new_years_attributes)
     # Generate image
-    image_url = generate_image(prompt)
+    image_url = generate_image(new_years_prompt)
     img = process_image(image_url)
-create_pdf(img, "birthday_card.pdf", target_name=attributes['name'])
+output_filename = mkpath("cards", f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.pdf")
+create_pdf(img, output_filename, message="Happy New Years!")
 
 print("Birthday card generated and saved as PDF successfully!")
+
+def main(attributes):
+    prompt = create_birthday_prompt(attributes)
+    image_url = generate_image(prompt)
+    img = process_image(image_url)
+    output_filename = mkpath("cards", f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.pdf")
+    create_pdf(img, output_filename, message="Happy Birthday!")
+    print("Main called and executed")
+    return output_filename
